@@ -4,10 +4,10 @@
 #baseurl: https://camilobermudez85.github.io
 
 # Site live URL
-url: https://camilobermudez85.github.io
+#url: https://camilobermudez85.github.io
 
 # Localhost 
-#url: http://127.0.0.1:4000  
+url: http://127.0.0.1:4000  
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
@@ -28,15 +28,15 @@ harmony:
     url: http://gayanvirajith.github.io
 
   # Google Analytics key, leave blank to ignore
-  google_analytics_key: UA-xxxx-x
+  google_analytics_key: AIzaSyCmEimgReeOwqLuKwaME50FGBX1v_2PESc
 
   # Profile links, leave blank to ignore
   social: 
-    github: gayanvirajith
-    twitter: gayanvirajith
-    facebook: gayanvirajith
+    github: camilobermudez85
+    twitter: kmilobermudez
+    facebook:
     gplus: +GayanVirajith
-    dribble: gayan
+    dribble:
     pinterest: 
   # Toggle disclaimer in footer
   show_disclaimer: true
