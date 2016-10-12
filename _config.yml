@@ -11,17 +11,17 @@ url: https://camilobermudez85.github.io
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: Harmony
-  # Little description about your site
-  description: Harmony is free responsive jekyll theme.
+  name: Natural Language
+  description: Written thoughts on... things.
   # 'meta_description:' Write an awesome description for your new site here.
   # It will appear in your document head meta (for Google search results) and 
   # in your feed.xml site description.
   meta_description: > # 
-   Harmony is a free responsive jekyll theme by Gayan Virajith
-   and Maheshika Lakmali. Sourced on Github - 
-   https://github.com/gayanvirajith/harmony
-  basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
+   Natural language is a blog on different subjects
+   but mostly on computers and we the people who 
+   deal with them. By Camilo Bermúdez.
+#  basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
+  basetheme: redish # pre defined thmes are darken, blue-water, redish.
   author: # Author details
     name: Gayan Virajith
     email: gayanvirajith@gmail.com
@@ -35,7 +35,7 @@ harmony:
     github: camilobermudez85
     twitter: kmilobermudez
     facebook:
-    gplus: +GayanVirajith
+    gplus: 102942975109167525365
     dribble:
     pinterest: 
   # Toggle disclaimer in footer
