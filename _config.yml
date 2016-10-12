@@ -4,10 +4,10 @@
 #baseurl: https://camilobermudez85.github.io
 
 # Site live URL
-#url: https://camilobermudez85.github.io
+url: https://camilobermudez85.github.io
 
 # Localhost 
-url: http://127.0.0.1:4000  
+#url: http://127.0.0.1:4000  
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
@@ -62,3 +62,6 @@ exclude:
 sass:
     sass_dir: assets/css/_sass
     style: :compressed
+
+# Disqus Comments
+comments: true
