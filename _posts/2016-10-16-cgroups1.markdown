@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "Control Groups"
+date:   2016-10-13 01:00:00
+description: Quick introduction to linux control groups.
+categories:
+    - blog
+    - cs
+tags:
+    - linux
+    - devops
+permalink: cgroups-1
+---
+
+Look at the title of this post, during the remaining lines of it you will be reading either about a 1930s fascist Italy special police 
+corps or, of course, about a linux kernel feature, and I'll conclude complaining either about the intriguing ability of politicians to
+put fancy names to their abominable ideas or about the hilarious inability of engineers to put a decent name to anything at all, including
+their own children.
+
+We've all seen the fuss around docker, lots of people have been talking about it in the recent years and some of them even know what they're 
+talking about. Jokes aside, docker, and in general containers, whether you care or not, are heavily disrupting the scene and I 
+just thought some of you might be interested in getting to know a little bit about some of the clever and sofisticated pieces of machinery 
+that made it all possible. So, yes, going back to the title of the post, unfortunately we're talking about the much less violent option, 
+the linux kernel feature.
+
+We won't dive too deep so the concepts exposed won't be extremely complex, you don't need to know much about containers or about GNU/linux 
+beyond the basics, let's roll.
+
+
+
+Concept
+
+
+
+Hands on
+
