@@ -13,9 +13,8 @@ permalink: cgroups-1
 ---
 
 Look at the title of this post, during the remaining lines of it you will be reading either about a 1930s fascist Italy special police 
-corps or, of course, about a linux kernel feature, and I'll conclude complaining either about the intriguing ability of politicians to
-put fancy names to their abominable ideas or about the hilarious inability of engineers to put a decent name to anything at all, including
-their own children.
+corps or, of course, about a linux kernel feature, and I will end up complaining either about how politicians put fancy names to their 
+abominable ideas or about the hilarious inability of engineers to put a decent name to anything at all, including their own children.
 
 We've all seen the fuss around docker, lots of people have been talking about it in the recent years and some of them even know what they're 
 talking about. Jokes aside, docker, and in general containers, whether you care or not, are heavily disrupting the scene and I 
@@ -27,8 +26,35 @@ We won't dive too deep so the concepts exposed won't be extremely complex, you d
 beyond the basics, let's roll.
 
 
+The Concept
 
-Concept
+Since you know the basic stuff about containers, let's cut to the chase, containerization technologies such as docker and rkt are supposed to,
+among many other things, limit and keep track of the share of actual resources (CPU, RAM, IO, Network...) that every running container gets 
+in order to account for the resources used and to ensure that containers are truly isolated from one another, that is to say, the people developing docker 
+and rkt needed a mechanism that allowed them to do precisely that, and they didn't have to look too far, the linux kernel happened to have exactly 
+that mechanism already built in for quite some time, it's called *control groups*. Most of the technologies on wich containers built on have 
+existed for a while, even the idea of putting them together have existed for some time as well, it's called LXC, but that's a whole different story.
+
+
+The Process Tree
+
+In case
+
+So what is control groups all about? It's all about resources (CPU, RAM, IO, Network...) and the way they get distributed across the process tree, 
+and what is a container if not simply a branch in the process tree. But how does control groups does what it does? well, it's quite simple, 
+it groups processes so that certain constraints on resources can be applied to each group, every group is formed by a branch of the process tree and 
+has a set of properties associated to it, every one of these groups is called **a control group**. There's a little more to it, but let's stick to that 
+definition by now.
+
+DIAGRAMA
+
+
+
+
+First, it does not deal with resources at all, it simply offers an interface to be used by the **subsystems** that actually do deal with resources.
+
+
+
 
 
 
