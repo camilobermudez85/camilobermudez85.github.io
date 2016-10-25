@@ -750,3 +750,9 @@ tbody tr:nth-child(odd) td,
 tbody tr:nth-child(odd) th {
   background-color: $base-05;
 }
+
+.center-image
+{
+    margin: 0 auto;
+    display: block;
+}
