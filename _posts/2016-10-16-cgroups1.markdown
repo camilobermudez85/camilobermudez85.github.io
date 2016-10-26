@@ -57,7 +57,7 @@ is a running container if not simply a branch in the process tree. Control
 groups actually have many more uses, but in this post will focus only on
 distribution of resources. 
 
-But how does control groups does what it does? Well, it's quite simple, it
+But how does control groups do what it does? Well, it's quite simple, it
 groups processes so that certain constraints on resources can be applied to
 each group, every group is formed by a branch of the process tree and has a set
 of parameters associated to it, every one of these groups is called a **control
