@@ -17,7 +17,7 @@ permalink: cgroups-1
 
 Look at the title of this post, during the remaining lines of it you will be
 reading either about a 1930s fascist Italy special police corps or, of course,
-about a linux kernel feature, good for you that I don't feel like complaining
+about a linux kernel feature, lucky for you that I don't feel like complaining
 about the intriguing ability of politicians to put fancy names to the most
 abominable ideas and probably other posts will come on that subject, but this
 one is about the kernel feature called **control groups**.
