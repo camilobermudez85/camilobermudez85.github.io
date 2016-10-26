@@ -46,11 +46,10 @@ the resources used and to ensure that containers are truly isolated from one
 another, that is to say, the lovely people developing docker and rkt needed a
 mechanism that allowed them to do precisely that, and they didn't have to look
 too far, the linux kernel happened to have exactly that mechanism already built
-in for quite some time, it's called *control groups*. 
-
-Most technologies on which containers built on have existed for a while, even
-the idea of putting them together have existed for some time as well, it's
-called LXC, but that's a whole different story.
+in for quite some time, it's called *control groups*. Most technologies on
+which containers built on have existed for a while, even the idea of putting
+them together have existed for some time as well, it's called LXC, but that's a
+whole different story.
 
 So what is control groups all about? It's all about resources (CPU, RAM, IO,
 Network...) and the way they get distributed across the process tree, and what
