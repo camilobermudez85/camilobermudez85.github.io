@@ -26,7 +26,7 @@ We've all seen the fuss around docker, lots of people have been talking about
 it in the recent years and some of them even know what they're talking about.
 Docker, and in general containers, whether you care or not, are heavily
 disrupting the scene and I just thought some of you might be interested in
-getting to know a little bit about some of the clever and sofisticated pieces
+getting to know a little bit about some of the clever and sophisticated pieces
 of machinery that made it all possible.
 
 PLEASE DO NOT use this post as a technical reference, it's meant to be simply a
@@ -46,7 +46,7 @@ the resources used and to ensure that containers are truly isolated from one
 another, that is to say, the lovely people developing docker and rkt needed a
 mechanism that allowed them to do precisely that, and they didn't have to look
 too far, the linux kernel happened to have exactly that mechanism already built
-in for quite some time, it's called *control groups*. Most technologies on wich
+in for quite some time, it's called *control groups*. Most technologies on which
 containers built on have existed for a while, even the idea of putting them
 together have existed for some time as well, it's called LXC, but that's a
 whole different story.
@@ -57,7 +57,7 @@ is a running container if not simply a branch in the process tree. Control
 groups actually have many more uses, but in this post will focus only on
 distribution of resources. 
 
-But how does control groups does what it does? well, it's quite simple, it
+But how does control groups does what it does? Well, it's quite simple, it
 groups processes so that certain constraints on resources can be applied to
 each group, every group is formed by a branch of the process tree and has a set
 of parameters associated to it, every one of these groups is called a **control
@@ -71,7 +71,7 @@ One of the interesting design decision made by the kernel developers when
 developing control groups is that control groups itself shouldn't deal with any
 resource at all, it should only expose an interface through which the
 components of the kernel that DO deal with resources could distribute the
-resource that each one of them manages accross the process tree, in control
+resource that each one of them manages across the process tree, in control
 groups terminology these components are called **subsystems** and they are one
 type of the clients that consume the interface that control groups expose in
 order to do the actual distribution of resources.
@@ -164,7 +164,7 @@ intended to be an extensive explanation of its inner mechanisms and concepts
 that as you can imagine would require many more pages, and many concepts have
 been oversimplified in order to make them easily understandable, if you want to
 dig way deeper you can take a look at the [kernel
-docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kerne Docs") 
+docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel Docs") 
 where besides you will find a nice example for a practical use of
 hierarchies.  In another post we'll have a more practical approach and we'll
 take a look at the concrete details of the control groups interface and the way
