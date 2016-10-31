@@ -46,15 +46,15 @@ the resources used and to ensure that containers are truly isolated from one
 another, that is to say, the lovely people developing docker and rkt needed a
 mechanism that allowed them to do precisely that, and they didn't have to look
 too far, the linux kernel happened to have exactly that mechanism already built
-in for quite some time, it's called *control groups*. Most technologies on
-which containers built on have existed for a while, even the idea of putting
-them together have existed for some time as well, it's called LXC, but that's a
-whole different story.
+in for quite some time, it's called *control groups*. It's a good time to
+mention that most technologies on which containers built on have existed for a
+while, even the idea of putting them together have existed for some time as
+well, it's called LXC, but that's a whole different story.
 
 So what is control groups all about? It's all about resources (CPU, RAM, IO,
 Network...) and the way they get distributed across the process tree, and what
 is a running container if not simply a branch in the process tree. Control
-groups actually have many more uses, but in this post will focus only on
+groups actually have many more uses, but in this post we'll focus only on
 distribution of resources. 
 
 But how does control groups do what it does? Well, it's quite simple, it
@@ -73,7 +73,7 @@ resource at all, it should only expose an interface through which the
 components of the kernel that DO deal with resources could distribute the
 resource that each one of them manages across the process tree, in control
 groups terminology these components are called **subsystems** and they are one
-type of the clients that consume the interface that control groups expose in
+type of the clients that consume the interface that control groups exposes in
 order to do the actual distribution of resources.
 
 
