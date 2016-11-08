@@ -1,0 +1,99 @@
+---
+layout: post
+title:  "Control Groups Hands On"
+date:   2016-11-01 01:00:00
+description: Quick introduction to linux control groups and containers.
+categories:
+    - cs
+    - linux
+    - containers
+tags:
+    - linux
+    - devops
+    - containers
+    - control groups
+permalink: cgroups-2
+---
+
+In a [previous post]({{ site.url }}/cgroups-1) I struggled to explain,
+successfully I hope, in a very simplistic way the basic concepts behind
+**control groups**, then I figured it would be interesting to play around a
+little with the real thing and put the results here for posterity in case one
+day I find myself in a desperate need to remember how is it that control groups
+works. First let's have a quick look at the general details about the interface
+we're about to deal with.
+
+#### The Interface
+
+The control groups interface, like others in the kernel, is exposed through a
+virtual filesystem where a **hierarchy** (remember hierarchies?) is mapped to a
+hierrachy of directories and at least one **subsystem** (remember subsystems,
+right?) has to be attached to this filesystem at mount time. All of this
+mounting and attaching can be done with a single command using **mount**, 
+
+![mount cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/mount.png){:.center-image }
+
+in this example had I run this command I would be mounting a hierarchy at the
+*/cgroup/memory* mount point and attaching to it the *memory* subsystem, I just
+didn't need to because the kernel mounts this and other hierarchies by default
+at boot time, you'll see. 
+
+I can list all the subsystems available in my linux installation by using the
+**lssubsys** tool,
+
+![lssubsys]({{ site.url }}/assets/2016-11-01-cgroups2/lssubsys.png){:.center-image }
+
+the option *-a* lists all subsystems, attached or not, and the option *-m*
+additionaly shows the mount point of every subsystem that is currently
+attached. As you can see, all of the subsystems available in my installation
+are attached to hierarchies under the path **/sys/fs/cgroup**, that's the path
+under which the hierarchies get mounted at boot time, go ahead and explore it.
+
+Within these mapped hierarchies every subdirectory represents a concrete
+control group and the ordinary files within every subdirectory represent
+parameters and state associated with the control group that the subdirectory
+represents. Create a new directory under one of these hierarchies, say *memory*, and 
+see what happens.
+
+![create cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/create.png){:.center-image }
+
+In this example I created a control group called **test-cgroup** within the
+hierarchy to which the subsystem *memory* is attached to and immediately a
+bunch of files appeared within it, those are input and output files used by the
+subsystem and by control groups itself to provide information about the state
+and to configure my control group, and they are all there because kindly and
+automagically the kernel filled in the gaps for me with default values where
+necessary. 
+
+If I want to alter this new control group in any way all I have to do is write
+to the input files that were just created for me, if I want to add a process
+to this control group all I have to do is append the process id to the file
+named *tasks*, every control group directory has one of those.
+
+There's comprehensive documentation on the details of configuration and output
+of the subsystems that are built in by default on most linux distributions in
+the [RHEL
+documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
+
+Finally, in order to delete the newly created control group you need to install the **cgdelete** 
+tool included in the **cgroup-tools** package in Ubuntu,
+
+![install cgroup-tools]({{ site.url }}/assets/2016-11-01-cgroups2/cgroup-tools.png){:.center-image }
+
+then,
+
+![cgdelete]({{ site.url }}/assets/2016-11-01-cgroups2/cgdelete.png){:.center-image }
+
+and it's gone, cgdelete is invoked by providing to it the subsystem and the
+control group in the form, 
+
+``` bash
+cgdelete subsystem:/relative-path-of-the-cgroup
+```
+
+#### The Example
+
+
+
+
+
