@@ -85,15 +85,30 @@ then,
 ![cgdelete]({{ site.url }}/assets/2016-11-01-cgroups2/cgdelete.png){:.center-image }
 
 and it's gone, cgdelete is invoked by providing to it the subsystem and the
-control group in the form, 
-
-``` bash
-cgdelete subsystem:/relative-path-of-the-cgroup
-```
-
-#### The Example
+control group in the form, **cgdelete subsystem:/relative-path-of-the-cgroup**.
 
 
+#### Hands On
+
+The next script will reserve a certain amount of memory 
+{% highlight bash linenos %}
+#!/bin/bash
+
+memory_limit="256M"
+
+stress --quiet --vm 4 --vm-bytes ${memory_limit} --vm-keep &>/dev/null &
+trap 'kill -9 $(pgrep -P '$!') &> /dev/null' EXIT
+while true; do
+    total=0;
+    for p in $(pgrep -P $!); do
+        rss=$(grep "^VmRSS" "/proc/$p/status" | awk '{print $2}');
+        process=$(ps -q ${p} -eo ppid,pid,cgroup | grep ${p} | awk -F , '{print $1}')
+        total=$(($total + $rss));
+        echo "$process ==> $(($rss/1024))MB"
+    done;
+    echo "Total ==> $(($total/1024))MB";
+done
+{% endhighlight %}
 
 
 
