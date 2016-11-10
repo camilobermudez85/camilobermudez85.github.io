@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Control Groups Hands On"
+title:  "Control Groups And Joga"
 date:   2016-11-01 01:00:00
 description: Quick introduction to linux control groups and containers.
 categories:
@@ -47,13 +47,12 @@ the option *-a* lists all subsystems, attached or not, and the option *-m*
 additionaly shows the mount point of every subsystem that is currently
 attached. As you can see, all of the subsystems available in my installation
 are attached to hierarchies under the path **/sys/fs/cgroup**, that's the path
-under which the hierarchies get mounted at boot time, go ahead and explore it.
+under which the hierarchies get mounted at boot time.
 
 Within these mapped hierarchies every subdirectory represents a concrete
 control group and the ordinary files within every subdirectory represent
 parameters and state associated with the control group that the subdirectory
-represents. Create a new directory under one of these hierarchies, say *memory*, and 
-see what happens.
+represents.
 
 ![create cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/create.png){:.center-image }
 
@@ -68,7 +67,7 @@ necessary.
 If I want to alter this new control group in any way all I have to do is write
 to the input files that were just created for me, if I want to add a process
 to this control group all I have to do is append the process id to the file
-named *tasks*, every control group directory has one of those.
+named *tasks*, every control group has one of those.
 
 There's comprehensive documentation on the details of configuration and output
 of the subsystems that are built in by default on most linux distributions in
@@ -88,13 +87,29 @@ and it's gone, cgdelete is invoked by providing to it the subsystem and the
 control group in the form, **cgdelete subsystem:/relative-path-of-the-cgroup**.
 
 
-#### Hands On
+#### Controlling Stress
 
-The next script will reserve a certain amount of memory 
+The preceeding was an intentionally deceitful title, by now the least you should
+have learned is that this is not a blog about joga, when I say *stress* I mean
+[this](http://people.seas.harvard.edu/~apw/stress/) really cool workload
+generator I just recently discovered, I think it was developed by [Amos
+Waterland](http://people.seas.harvard.edu/~apw/) at Harvard, and I found it
+quite useful for my purposes. 
+
+To make this work you need to install *stress* and *cgroup-tools*, in Ubuntu
+and I think most debians this should do,
+
+```
+apt-get install stress
+apt-get install cgroup-tools
+```
+
+and here we go,
+  
 {% highlight bash linenos %}
 #!/bin/bash
 
-memory_limit="256M"
+memory_limit="128M"
 
 stress --quiet --vm 4 --vm-bytes ${memory_limit} --vm-keep &>/dev/null &
 trap 'kill -9 $(pgrep -P '$!') &> /dev/null' EXIT
@@ -110,5 +125,83 @@ while true; do
 done
 {% endhighlight %}
 
+this is a bash script that will fork four processes, each process will reserve
+the amount of memory defined in line 3 and for each of the four processes it
+will print its parent process id, its process id, the control group it belongs
+to in the memory hierarchy and the amount of memory reserved by it, it will keep
+printing in a loop until the EXIT signal is received, this is its output,
 
+![root]({{ site.url }}/assets/2016-11-01-cgroups2/root.png){:.center-image }
 
+keep in mind a couple of things, first, the total amount of memory reserved by
+the four processes is about **512MB** (128MB x 4) as expected, and second, the
+control group my four processes belong to in the memory hierarchy is called
+**user.slice** and it's a control group created by default by my system at boot
+time, look at it, it's the last directory listed next,
+
+![user.slice cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/user-slice.png){:.center-image }
+
+now have a look at this modified version of the script,
+
+{% highlight bash linenos %}
+#!/bin/bash
+
+cgroup_path="/sys/fs/cgroup/memory/cgroup1"
+cgroup_memory_limit="256M"
+mkdir ${cgroup_path}
+pushd ${cgroup_path}
+echo "${cgroup_memory_limit}" > memory.limit_in_bytes
+echo $$ > tasks
+popd
+
+memory_limit="128M"
+
+stress --quiet --vm 4 --vm-bytes ${memory_limit} --vm-keep &>/dev/null &
+trap 'kill -9 $(pgrep -P '$!') &> /dev/null; cgdelete memory:/cgroup1' EXIT
+while true; do
+    total=0;
+    for p in $(pgrep -P $!); do
+        rss=$(grep "^VmRSS" "/proc/$p/status" | awk '{print $2}');
+        process=$(ps -q ${p} -eo ppid,pid,cgroup | grep ${p} | awk -F , '{print $1}')
+        total=$(($total + $rss));
+        echo "$process ==> $(($rss/1024))MB"
+    done;
+    echo "Total ==> $(($total/1024))MB";
+done
+{% endhighlight %}
+
+only two things changed, lines 3 to 9 were added and one instruction was added
+to the trap command in line 14, 
+
+* Line 4 sets the limit of memory this control group can reserve on 256MB
+* Line 5 creates a new control group called **cgroup1** within the *memory*
+  hierarchy
+* Line 7 sets a limit on the amount of memory that processes in the new control
+  group can reserve
+* Line 8 adds the current process id to the **tasks** file which means that the
+  current process and all of its children, including the four we will fork
+  next, now belong to the new control group **cgroup1**
+* In line 14 the extra instruction added to the trap command deletes the new
+  control group so that the clean up is complete
+
+if everything goes according to plan the four processes forked by *stress*
+should now belong to the control group **cgroup1** and the total amount of
+memory reserved by them should never exceed **256MB**, this is the output,
+
+![root]({{ site.url }}/assets/2016-11-01-cgroups2/cgroup1.png){:.center-image }
+
+there we go, control groups in action, all processes now are part of the
+**cgroup1** control group and after a few seconds running the total memory
+seems to stabilize at **257MB**, almost as expected.
+
+Just like the [previous post]({{ site.url }}/cgroups-1) this was a well
+intentioned attempt to serve as an introduction to the concepts behind control
+groups, hope it helps somebody other than my future self and as you can imagine
+to distill such a complex subject in a few posts requires extreme
+oversimplification so I strongly recommend to dig deeper at the [kernel
+docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
+Docs") and the [RHEL
+documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
+
+[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-2) 
+the source code for this post.
