@@ -12,6 +12,7 @@ tags:
     - devops
     - containers
     - control groups
+    - stress
 permalink: cgroups-2
 ---
 
