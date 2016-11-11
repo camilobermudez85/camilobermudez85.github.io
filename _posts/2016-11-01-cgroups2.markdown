@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Control Groups And Joga"
+title:  "Control Groups And Yoga"
 date:   2016-11-01 01:00:00
 description: Quick introduction to linux control groups and containers.
 categories:
@@ -19,16 +19,16 @@ In a [previous post]({{ site.url }}/cgroups-1) I struggled to explain,
 successfully I hope, in a very simplistic way the basic concepts behind
 **control groups**, then I figured it would be interesting to play around a
 little with the real thing and put the results here for posterity in case one
-day I find myself in a desperate need to remember how is it that control groups
-works. First let's have a quick look at the general details about the interface
-we're about to deal with.
+day I find myself in a desperate need to remember the basics about this kernel
+feature. First, let's have a quick look at the general details about the
+interface we're about to deal with.
 
-#### The Interface
+### The Interface
 
 The control groups interface, like others in the kernel, is exposed through a
-virtual filesystem where a **hierarchy** (remember hierarchies?) is mapped to a
-hierrachy of directories and at least one **subsystem** (remember subsystems,
-right?) has to be attached to this filesystem at mount time. All of this
+virtual file-system where a **hierarchy** (remember hierarchies?) is mapped to a
+hierarchy of directories and at least one **subsystem** (remember subsystems,
+right?) has to be attached to this file-system at mount time. All of this
 mounting and attaching can be done with a single command using **mount**, 
 
 ![mount cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/mount.png){:.center-image }
@@ -36,7 +36,7 @@ mounting and attaching can be done with a single command using **mount**,
 in this example had I run this command I would be mounting a hierarchy at the
 */cgroup/memory* mount point and attaching to it the *memory* subsystem, I just
 didn't need to because the kernel mounts this and other hierarchies by default
-at boot time, you'll see. 
+at boot time, you will see. 
 
 I can list all the subsystems available in my linux installation by using the
 **lssubsys** tool,
@@ -44,14 +44,14 @@ I can list all the subsystems available in my linux installation by using the
 ![lssubsys]({{ site.url }}/assets/2016-11-01-cgroups2/lssubsys.png){:.center-image }
 
 the option *-a* lists all subsystems, attached or not, and the option *-m*
-additionaly shows the mount point of every subsystem that is currently
+additionally shows the mount point of every subsystem that is currently
 attached. As you can see, all of the subsystems available in my installation
 are attached to hierarchies under the path **/sys/fs/cgroup**, that's the path
 under which the hierarchies get mounted at boot time.
 
-Within these mapped hierarchies every subdirectory represents a concrete
-control group and the ordinary files within every subdirectory represent
-parameters and state associated with the control group that the subdirectory
+Within these mapped hierarchies every sub-directory represents a concrete
+control group and the ordinary files within every such sub-directory represent
+parameters and state associated with the control group that the sub-directory
 represents.
 
 ![create cgroup]({{ site.url }}/assets/2016-11-01-cgroups2/create.png){:.center-image }
@@ -65,7 +65,7 @@ automagically the kernel filled in the gaps for me with default values where
 necessary. 
 
 If I want to alter this new control group in any way all I have to do is write
-to the input files that were just created for me, if I want to add a process
+into the input files that were just created for me, if I want to add a process
 to this control group all I have to do is append the process id to the file
 named *tasks*, every control group has one of those.
 
@@ -87,10 +87,11 @@ and it's gone, cgdelete is invoked by providing to it the subsystem and the
 control group in the form, **cgdelete subsystem:/relative-path-of-the-cgroup**.
 
 
-#### Controlling Stress
+### Controlling Stress
 
-The preceeding was an intentionally deceitful title, by now the least you should
-have learned is that this is not a blog about joga, when I say *stress* I mean
+The preceding was an intentionally deceitful title, by now the least you should
+have learned is that this is not a blog about yoga or any other stress
+reduction technique, when I say *stress* I mean
 [this](http://people.seas.harvard.edu/~apw/stress/) really cool workload
 generator I just recently discovered, I think it was developed by [Amos
 Waterland](http://people.seas.harvard.edu/~apw/) at Harvard, and I found it
@@ -173,7 +174,8 @@ done
 only two things changed, lines 3 to 9 were added and one instruction was added
 to the trap command in line 14, 
 
-* Line 4 sets the limit of memory this control group can reserve on 256MB
+* Line 4 defines the variable containing the limit of memory this control group
+  can reserve on 256MB
 * Line 5 creates a new control group called **cgroup1** within the *memory*
   hierarchy
 * Line 7 sets a limit on the amount of memory that processes in the new control
@@ -182,7 +184,7 @@ to the trap command in line 14,
   current process and all of its children, including the four we will fork
   next, now belong to the new control group **cgroup1**
 * In line 14 the extra instruction added to the trap command deletes the new
-  control group so that the clean up is complete
+  control group so that the cleanup is complete
 
 if everything goes according to plan the four processes forked by *stress*
 should now belong to the control group **cgroup1** and the total amount of
@@ -194,14 +196,14 @@ there we go, control groups in action, all processes now are part of the
 **cgroup1** control group and after a few seconds running the total memory
 seems to stabilize at **257MB**, almost as expected.
 
-Just like the [previous post]({{ site.url }}/cgroups-1) this was a well
-intentioned attempt to serve as an introduction to the concepts behind control
-groups, hope it helps somebody other than my future self and as you can imagine
-to distill such a complex subject in a few posts requires extreme
+Just like the [previous post]({{ site.url }}/cgroups-1) this was a
+well-intentioned attempt to serve as an introduction to the concepts behind
+control groups, hope it helps somebody other than my future self and as you can
+imagine to distill such a complex subject in a few posts requires extreme
 oversimplification so I strongly recommend to dig deeper at the [kernel
 docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
 Docs") and the [RHEL
 documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
 
-[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-2) 
+[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-2)
 the source code for this post.
