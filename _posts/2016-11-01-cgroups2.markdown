@@ -20,9 +20,8 @@ In a [previous post]({{ site.url }}/cgroups-1) I struggled to explain,
 successfully I hope, in a very simplistic way the basic concepts behind
 **control groups**, then I figured it would be interesting to play around a
 little with the real thing and put the results here for posterity in case one
-day I find myself in a desperate need to remember the basics about this kernel
-feature. First, let's have a quick look at the general details about the
-interface we're about to deal with.
+day I find myself in a desperate need to remember. First, let's have a quick
+look at the general details about the interface we're about to deal with.
 
 ### The Interface
 
