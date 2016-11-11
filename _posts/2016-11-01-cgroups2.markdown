@@ -107,7 +107,7 @@ apt-get install cgroup-tools
 
 and here we go,
   
-{% highlight bash linenos %}
+```
 #!/bin/bash
 
 memory_limit="128M"
@@ -124,7 +124,7 @@ while true; do
     done;
     echo "Total ==> $(($total/1024))MB";
 done
-{% endhighlight %}
+```
 
 this is a bash script that will fork four processes, each process will reserve
 the amount of memory defined in line 3 and for each of the four processes it
@@ -144,7 +144,7 @@ time, look at it, it's the last directory listed next,
 
 now have a look at this modified version of the script,
 
-{% highlight bash linenos %}
+```
 #!/bin/bash
 
 cgroup_path="/sys/fs/cgroup/memory/cgroup1"
@@ -169,7 +169,7 @@ while true; do
     done;
     echo "Total ==> $(($total/1024))MB";
 done
-{% endhighlight %}
+```
 
 only two things changed, lines 3 to 9 were added and one instruction was added
 to the trap command in line 14, 
