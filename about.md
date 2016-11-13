@@ -4,9 +4,9 @@ title: About me
 permalink: /about/
 ---
 
-Hi, I am Camilo Bermúdez, a software developer based on Bogotá, Colombia.
-Been playing with computers since I was a kid and working with them my entire 
-adult life.
+Hi, I am Camilo Bermúdez, I'm a software developer based on Bogotá, Colombia.
+I have been playing with computers since I was a kid and working with them
+during my entire adult life.
 
 
 ### Contact me
