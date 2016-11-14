@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Control Groups And Yoga"
+title:  "Control Groups and Yoga"
 date:   2016-11-01 01:00:00
 description: Quick introduction to linux control groups and containers.
 categories:
