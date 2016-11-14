@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Control Groups and Docker"
-date:   2016-11-01 01:00:00
+date:   2016-11-12 01:00:00
 description: Quick introduction to linux control groups and containers.
 categories:
     - cs
