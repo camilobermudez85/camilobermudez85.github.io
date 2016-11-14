@@ -1,0 +1,156 @@
+---
+layout: post
+title:  "Control Groups and Docker"
+date:   2016-11-01 01:00:00
+description: Quick introduction to linux control groups and containers.
+categories:
+    - cs
+    - linux
+    - containers
+tags:
+    - linux
+    - devops
+    - containers
+    - control groups
+    - stress
+    - docker
+    - memory
+permalink: cgroups-3
+---
+
+In the [first]({{ site.url }}/cgroups-1) and [second post]({{ site.url }}/cgroups-2) 
+of this series a brief introduction to control groups was made,
+tha basic concepts and a little tinkering with the real thing, now I just want
+to see for myself that docker actually uses control groups to limit the amount
+of memory assigned to a real container, and if so, how does it do it.
+
+If you find yourself in trouble trying to understand what I say, for a reason
+other than my ability to communicate in english, I suggest you to go
+back to the two previous posts I just mentioned in the previous paragraph.
+
+### The Containerized Memory Sink
+
+``` dockerfile
+FROM ubuntu
+
+ADD memory-sink /memory-sink
+RUN apt-get -y update; apt-get -y install stress;
+
+CMD ["/memory-sink"]
+```
+
+This is a docker file that will create a docker image as follows,
+
+* Extend the oficial *latest* tag ubuntu has gently made available on the
+  docker hub.
+* Add the memory-sink script to the build context
+* Update the list of packages
+* Install [stress](http://people.seas.harvard.edu/~apw/stress/)
+* Set the **memory-sink** script as the entry point to my container, that is,
+  the executable docker will run when I run my container
+
+```
+#!/bin/bash
+
+memory_limit="128M"
+
+stress --quiet --vm 4 --vm-bytes ${memory_limit} --vm-keep &>/dev/null &
+while true; do
+    total=0;
+    for p in $(pgrep -P $!); do
+        rss=$(grep "^VmRSS" "/proc/$p/status" | awk '{print $2}');
+        process=$(ps -q ${p} -eo ppid,pid | grep ${p})
+        total=$(($total + $rss));
+        echo "$process ==> $(($rss/1024))MB"
+    done;
+    echo "Total ==> $(($total/1024))MB";
+done
+```
+
+And this is **memory-sink**, it's a bash script that will fork four processes
+and each one of them will reserve a maximum of 128MB of memory, that means a
+total of 512MB (128MB x 4), then it will loop indefinitely printing for each
+forked process, it's parent process id, it's process id and the amount of
+memory it has reserved. It's The memory sink.
+
+Ok, let's build the image,
+
+![build image]({{ site.url }}/assets/2016-11-12-cgroups3/build-image.png){:.center-image }
+
+and there it is, it's a pretty little image called **the-memory-sink**, now
+let's run it,
+
+![run container]({{ site.url }}/assets/2016-11-12-cgroups3/run-container.png){:.center-image }
+
+hmmm, interesting, my container created a process with id 7, wich in turn
+forked four processes as expected, the processes 9, 10, 11 and 12, and after a
+few loops every process reserved 128MB, as expected. Now let's see what docker
+did to the memory hierarchy in the control groups file-system while my
+container was running,
+
+![memory hierarchy]({{ site.url }}/assets/2016-11-12-cgroups3/memory-hierarchy.png){:.center-image }
+
+look, there's a new control group in the memory hierarchy, it's called
+**docker**, let's see what's in there, 
+
+![docker cgroup]({{ site.url }}/assets/2016-11-12-cgroups3/docker-cgroup.png){:.center-image }
+
+those are the usual input/output files of the **docker** control group but
+there's yet another control group within this one, it has a misteriously long
+name which looks awfully familiar to a container id, so in the last command I
+queried info about my running container and I was rather delighted to find out
+that its id is actually a short version of the name of that misteriuos control
+group, so that control group must have been created by docker exclusively for
+my container. 
+
+Now I want to check if this control group, created exclusively for my
+container, has any limit on the amount of memory it can use,
+
+![limit in bytes 1]({{ site.url }}/assets/2016-11-12-cgroups3/limit-in-bytes-1.png){:.center-image }
+
+the file **memory.limit-in-bytes** is set to **9223372036854771712 = 2^63**
+meaning that my container has no practical limit on how much memory it can use,
+as it is now, if there was a bug in my memory-sink script it could drain all of
+the  memory available on my system condemning me to an unwanted reboot, and I
+don't want that, I know you do but I don't, so let's try and fix that. Now I
+will run my container but this time asking docker to set a limit on how
+much memory the container can use, the [docker documentation](https://docs.docker.com/engine/reference/run/) 
+explains how to limit different kinds of resources but know let us focus only on memory,
+
+![docker memory]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory.png){:.center-image }
+
+by suppling the option **--memory=256m** docker is instructed to put a limit of
+256MB to the container,
+
+![docker memory 2]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory-2.png){:.center-image }
+
+after a while my memory sink stabilizes somewhere a little below 256MB, it's
+not allowed to reserve 512MB as it did before. Now let's see what's in the file
+**memory.limit-in-bytes** in the control group created for my new container,
+
+![docker memory 3]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory-3.png){:.center-image }
+
+it's set on **268435456 = 2^28 = 256MB**!. So docker is obviously using control
+groups to limit the resources my container can use, nothing like good old evidence.
+
+### Wrapping Up
+
+What we've seen in this post regarding memory can be extended to the other
+resources that can be restrained by control groups, docker creates a control
+group called **docker** on every hierarchy and for every running container it
+creates a control group within (children of) that **docker** control group, it
+is so in order to allow the resources for a single container to be controlled
+independently from other containers while at the same time allowing docker to
+control the resources used by all the containers running on a single host.
+
+Just like the two previous posts this was a well-intentioned attempt to serve
+as an introduction to the concepts behind control groups, hope it helps
+somebody other than my future self and as you can imagine to distill such a
+complex subject in a few posts requires extreme oversimplification so I
+strongly recommend to dig deeper at the [kernel
+docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
+Docs") and the [RHEL
+documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
+
+[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-3)
+the source code for this post.
