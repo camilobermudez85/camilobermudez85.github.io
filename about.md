@@ -6,7 +6,8 @@ permalink: /about/
 
 Hi, I am Camilo Bermúdez, I'm a software developer based on Bogotá, Colombia.
 I have been playing with computers since I was a kid and working with them
-during my entire adult life.
+during my entire adult life. Currently working at [Transport
+Systems](https://www.transportsystems.co/).
 
 
 ### Contact me
