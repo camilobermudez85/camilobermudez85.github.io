@@ -152,5 +152,5 @@ docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
 Docs") and the [RHEL
 documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
 
-[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-3)
+[Here's](https://github.com/camilobermudez85/blog-source/tree/master/control-groups-3)
 the source code for this post.
