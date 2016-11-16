@@ -70,7 +70,7 @@ done
 And this is **memory-sink**, it's a bash script that will fork four processes
 and each one of them will reserve a maximum of 128MB of memory, that means a
 total of 512MB (128MB x 4), then it will loop indefinitely printing for each
-forked process, it's parent process id, it's process id and the amount of
+forked process, its parent process id, its process id and the amount of
 memory it has reserved. It's The memory sink.
 
 Ok, let's build the image,
@@ -82,7 +82,7 @@ let's run it,
 
 ![run container]({{ site.url }}/assets/2016-11-12-cgroups3/run-container.png){:.center-image }
 
-hmmm, interesting, my container created a process with id 7, wich in turn
+hmmm, interesting, my container created a process with id 7, which in turn
 forked four processes as expected, the processes 9, 10, 11 and 12, and after a
 few loops every process reserved 128MB, as expected. Now let's see what docker
 did to the memory hierarchy in the control groups file-system while my
@@ -95,11 +95,11 @@ look, there's a new control group in the memory hierarchy, it's called
 
 ![docker cgroup]({{ site.url }}/assets/2016-11-12-cgroups3/docker-cgroup.png){:.center-image }
 
-those are the usual input/output files of the **docker** control group but
-there's yet another control group within this one, it has a misteriously long
+those are the usual input/output files of the **docker** control group, but
+there's yet another control group within this one, it has a mysteriously long
 name which looks awfully familiar to a container id, so in the last command I
 queried info about my running container and I was rather delighted to find out
-that its id is actually a short version of the name of that misteriuos control
+that its id is actually a short version of the name of that mysterious control
 group, so that control group must have been created by docker exclusively for
 my container. 
 
@@ -112,10 +112,11 @@ the file **memory.limit-in-bytes** is set to **9223372036854771712 = 2^63**
 meaning that my container has no practical limit on how much memory it can use,
 as it is now, if there was a bug in my memory-sink script it could drain all of
 the  memory available on my system condemning me to an unwanted reboot, and I
-don't want that, I know you do but I don't, so let's try and fix that. Now I
-will run my container but this time asking docker to set a limit on how
-much memory the container can use, the [docker documentation](https://docs.docker.com/engine/reference/run/) 
-explains how to limit different kinds of resources but know let us focus only on memory,
+don't want that, so let's try to fix that. Now I will run my container, but
+this time asking docker to set a limit on how much memory the container can
+use, the [docker documentation](https://docs.docker.com/engine/reference/run/)
+explains how to limit different kinds of resources, but this time let us focus
+only on memory,
 
 ![docker memory]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory.png){:.center-image }
 
@@ -145,7 +146,7 @@ control the resources used by all the containers running on a single host.
 
 Just like the two previous posts this was a well-intentioned attempt to serve
 as an introduction to the concepts behind control groups, hope it helps
-somebody other than my future self and as you can imagine to distill such a
+somebody other than my future self and, as you can imagine, to distill such a
 complex subject in a few posts requires extreme oversimplification so I
 strongly recommend to dig deeper at the [kernel
 docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
