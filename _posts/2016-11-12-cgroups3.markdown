@@ -20,12 +20,12 @@ permalink: cgroups-3
 
 In the [first]({{ site.url }}/cgroups-1) and [second post]({{ site.url }}/cgroups-2) 
 of this series a brief introduction to control groups was made,
-tha basic concepts and a little tinkering with the real thing, now I just want
+the basic concepts and a little tinkering with the real thing, now I just want
 to see for myself that docker actually uses control groups to limit the amount
 of memory assigned to a real container, and if so, how does it do it.
 
 If you find yourself in trouble trying to understand what I say, for a reason
-other than my ability to communicate in english, I suggest you to go
+other than my ability to communicate in English, I suggest that you go 
 back to the two previous posts I just mentioned in the previous paragraph.
 
 ### The Containerized Memory Sink
@@ -41,13 +41,13 @@ CMD ["/memory-sink"]
 
 This is a docker file that will create a docker image as follows,
 
-* Extend the oficial *latest* tag ubuntu has gently made available on the
+* Extend the official *latest* tag ubuntu has gently made available on the
   docker hub.
 * Add the memory-sink script to the build context
 * Update the list of packages
 * Install [stress](http://people.seas.harvard.edu/~apw/stress/)
-* Set the **memory-sink** script as the entry point to my container, that is,
-  the executable docker will run when I run my container
+* Set the **memory-sink** script as the entry point to my container, that is to
+  say, the executable docker will run when I run my container
 
 ```
 #!/bin/bash
@@ -82,7 +82,7 @@ let's run it,
 
 ![run container]({{ site.url }}/assets/2016-11-12-cgroups3/run-container.png){:.center-image }
 
-hmmm, interesting, my container created a process with id 7, which in turn
+hmmm, interesting, the container created a process with id 7, which in turn
 forked four processes as expected, the processes 9, 10, 11 and 12, and after a
 few loops every process reserved 128MB, as expected. Now let's see what docker
 did to the memory hierarchy in the control groups file-system while my
