@@ -26,7 +26,7 @@ of memory assigned to a real container, and if so, how does it do it.
 
 If you find yourself in trouble trying to understand what I say, for a reason
 other than my ability to communicate in English, I suggest that you go 
-back to the two previous posts I just mentioned in the previous paragraph.
+back to the two posts I just mentioned in the previous paragraph.
 
 ### The Containerized Memory Sink
 
@@ -41,12 +41,12 @@ CMD ["/memory-sink"]
 
 This is a docker file that will create a docker image as follows,
 
-* Extend the official *latest* tag ubuntu has gently made available on the
+* Extends the official *latest* tag ubuntu has gently made available on the
   docker hub.
-* Add the memory-sink script to the build context
-* Update the list of packages
-* Install [stress](http://people.seas.harvard.edu/~apw/stress/)
-* Set the **memory-sink** script as the entry point to my container, that is to
+* Adds the memory-sink script to the build context
+* Updates the list of packages
+* Installs [stress](http://people.seas.harvard.edu/~apw/stress/)
+* Sets the **memory-sink** script as the entry point to my container, that is to
   say, the executable docker will run when I run my container
 
 ```
@@ -67,8 +67,8 @@ while true; do
 done
 ```
 
-And this is **memory-sink**, it's a bash script that will fork four processes
-and each one of them will reserve a maximum of 128MB of memory, that means a
+And this is **memory-sink**, it's a bash script that will fork four processes, 
+each one of them will reserve a maximum of 128MB of memory, that means a
 total of 512MB (128MB x 4), then it will loop indefinitely printing for each
 forked process, its parent process id, its process id and the amount of
 memory it has reserved. It's The memory sink.
@@ -112,16 +112,16 @@ the file **memory.limit-in-bytes** is set to **9223372036854771712 = 2^63**
 meaning that my container has no practical limit on how much memory it can use,
 as it is now, if there was a bug in my memory-sink script it could drain all of
 the  memory available on my system condemning me to an unwanted reboot, and I
-don't want that, so let's try to fix that. Now I will run my container, but
+don't want that, so let's try to fix it. Now I will run my container, but
 this time asking docker to set a limit on how much memory the container can
 use, the [docker documentation](https://docs.docker.com/engine/reference/run/)
-explains how to limit different kinds of resources, but this time let us focus
-only on memory,
+explains how to limit different resources, but this time let us focus only on
+memory,
 
 ![docker memory]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory.png){:.center-image }
 
-by suppling the option **--memory=256m** docker is instructed to put a limit of
-256MB to the container,
+by suppling the option **--memory=256m** docker is instructed to set a limit of
+256MB on the container,
 
 ![docker memory 2]({{ site.url }}/assets/2016-11-12-cgroups3/docker-memory-2.png){:.center-image }
 
@@ -145,13 +145,10 @@ independently from other containers while at the same time allowing docker to
 control the resources used by all the containers running on a single host.
 
 Just like the two previous posts this was a well-intentioned attempt to serve
-as an introduction to the concepts behind control groups, hope it helps
-somebody other than my future self and, as you can imagine, to distill such a
-complex subject in a few posts requires extreme oversimplification so I
-strongly recommend to dig deeper at the [kernel
-docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
-Docs") and the [RHEL
-documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
+as an introduction to the concepts behind control groups, I strongly recommend 
+to go to the [kernel](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
+Docs") and [RHEL](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html)
+docs.
 
 [Here's](https://github.com/camilobermudez85/blog-source/tree/master/control-groups-3)
-the source code for this post.
+the source code for this post. See you around.
