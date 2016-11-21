@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Control Groups And Yoga"
+title:  "Control Groups and Yoga"
 date:   2016-11-01 01:00:00
 description: Quick introduction to linux control groups and containers.
 categories:
@@ -198,12 +198,12 @@ seems to stabilize at **257MB**, almost as expected.
 
 Just like the [previous post]({{ site.url }}/cgroups-1) this was a
 well-intentioned attempt to serve as an introduction to the concepts behind
-control groups, hope it helps somebody other than my future self and as you can
-imagine to distill such a complex subject in a few posts requires extreme
+control groups, hope it helps somebody other than my future self and, as you can
+imagine, to distill such a complex subject in a few posts requires extreme
 oversimplification so I strongly recommend to dig deeper at the [kernel
 docs](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt "Kernel
 Docs") and the [RHEL
 documentation](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html).
 
-[Here's](https://github.com/camilobermudez85/blog-source/tree/control-groups-2/control-groups-2)
+[Here's](https://github.com/camilobermudez85/blog-source/tree/master/control-groups-2)
 the source code for this post.
